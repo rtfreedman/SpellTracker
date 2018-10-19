@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
 import TrackerList from './views/TrackerList.vue'
+import Test from './views/Test.vue'
 
 Vue.use(Router)
 
@@ -27,6 +28,11 @@ export default new Router({
       path: '/',
       name: 'DMinimal',
       component: TrackerList,
+    },
+    {
+      path: '/test',
+      name: 'test',
+      component: Test,
     },
   ],
 })
