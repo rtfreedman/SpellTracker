@@ -1,20 +1,21 @@
 <template>
   <v-container>
     <v-btn flat @click="addCharacter()">+Character</v-btn>
-    <v-btn @click="longRestAll()" v-if="characters.length > 1" flat color="blue">Long Rest All</v-btn>
+    <v-btn @click="longRestAll()" v-if="allCharacters.length > 1" flat color="blue">Long Rest All</v-btn>
     <v-tabs slider-color="yellow" v-model="selectedTab">
-      <v-tab v-for="c in characters.length" :key="'tab'+c">
-        <span v-if="characters[c - 1].name !== ''">{{shortenName(characters[c - 1].name)}}</span>
-        <span v-if="characters[c - 1].name === ''">Name</span>
+      <v-tab v-for="i in characterCount" :key="i">
+        <span v-if="allCharacters[i - 1].name !== ''">{{shortenName(allCharacters[i - 1].name)}}</span>
+        <span v-if="allCharacters[i - 1].name === ''">Name</span>
         <v-layout justify-start align-start row ma-1>
           <span
-            v-if="characters[c - 1].initiative !== null"
+            v-if="allCharacters[i - 1].initiative !== null"
             class="colorText"
-          >{{characters[c - 1].initiative}}</span>
+          >{{allCharacters[i - 1].initiative}}</span>
         </v-layout>
         <v-btn
-          v-if="characters.length > 1"
-          @click.stop="deleteCharacter = characters[selectedTab]; deleteDialog = true"
+          v-if="characterCount > 1"
+          :disabled="i-1 !== selectedTab"
+          @click.stop="deleteCharacter = allCharacters[selectedTab]; deleteDialog = true"
           icon
           small
           flat
@@ -23,9 +24,9 @@
           <v-icon small>mdi-close</v-icon>
         </v-btn>
       </v-tab>
-      <v-tab-item v-for="c in characters.length" :key="'character' + c">
+      <v-tab-item v-for="i in characterCount" :key="i">
         <v-card flat>
-          <tracker :id="characters[c - 1].id" :index="selectedTab"></tracker>
+          <tracker :id="allCharacters[i - 1].id" :index="selectedTab"></tracker>
         </v-card>
       </v-tab-item>
     </v-tabs>
@@ -50,6 +51,7 @@
 <script>
 import Tracker from '@/components/Tracker'
 import MessageSnackbar from '@/components/MessageSnackbar'
+import { mapGetters } from 'vuex'
 export default {
   name: 'TrackerList',
   beforeMount() {
@@ -60,9 +62,7 @@ export default {
     'msg-snackbar': MessageSnackbar,
   },
   computed: {
-    characters() {
-      return this.$store.state.characters
-    },
+    ...mapGetters(['allCharacters', 'characterCount']),
   },
   data() {
     return {
@@ -74,7 +74,7 @@ export default {
   methods: {
     addCharacter() {
       this.$store.commit('addCharacter')
-      this.selectedTab = this.characters.length - 1
+      setTimeout(() => (this.selectedTab = this.characterCount - 1), 1)
     },
     shortenName(name) {
       return name.split(' ')[0]

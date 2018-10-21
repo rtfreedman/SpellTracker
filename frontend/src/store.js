@@ -84,6 +84,10 @@ export default new Vuex.Store({
     magicClassOpts: [],
     characters: [JSON.parse(JSON.stringify(defaultCharacter))],
   },
+  getters: {
+    allCharacters: state => state.characters,
+    characterCount: state => state.characters.length,
+  },
   mutations: {
     // character mutations
     addCharacter() {
